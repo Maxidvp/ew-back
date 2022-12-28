@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const nursery_controller_1 = require("../controllers/nursery.controller");
+const validators_1 = require("../middlewares/validators/validators");
+const verifyToken_1 = require("../middlewares/validators/verifyToken");
+const nurseryRoutes = (0, express_1.Router)();
+nurseryRoutes.post("/register", validators_1.authNurseryValidator, nursery_controller_1.registerNursery);
+nurseryRoutes.post("/login", validators_1.loginValidator, nursery_controller_1.loginNursery);
+nurseryRoutes.get("/", verifyToken_1.verifyToken, nursery_controller_1.getNurseries);
+nurseryRoutes.get("/:id", verifyToken_1.verifyToken, nursery_controller_1.getNurseryById);
+nurseryRoutes.put("/:id", verifyToken_1.verifyToken, nursery_controller_1.updateNurseryById);
+nurseryRoutes.delete("/:id", verifyToken_1.verifyToken, nursery_controller_1.removeNursery);
+exports.default = nurseryRoutes;
