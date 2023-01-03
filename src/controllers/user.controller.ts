@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IUser } from "../interfaces/user.interface";
+import { IUser, IUserDTO } from "../interfaces/user.interface";
 import {
   createUser,
   findAll,
@@ -28,7 +28,12 @@ export const registerUser = async (req: Request, res: Response) => {
 
     const user = await createUser(newUser);
 
-    return res.send({ message: "User registered successfully", user });
+    const userDTO: IUserDTO = {
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name
+    }
+    return res.send({ message: "User registered successfully", email: user.email });//user:userDTO
   } catch (err: any) {
     return res.status(409).send("Error at register " + err);
   }
@@ -50,6 +55,7 @@ export const loginUser = async (req: Request, res: Response) => {
     //data para encriptar
     const encrypt = {
       _id: validate._id,
+      email : email
     };
 
     //sign payload
@@ -59,7 +65,10 @@ export const loginUser = async (req: Request, res: Response) => {
 
     return res
       .header("Authorization", token)
-      .send({ message: "User succesffully auth" });
+      .send({ 
+        message: "User succesffully auth",
+        accessToken: token
+      });
   } catch (err: any) {
     return res.status(409).send(err);
   }

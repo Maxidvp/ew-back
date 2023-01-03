@@ -13,3 +13,9 @@ export interface IUser {
   role: IRolesDocument["_id"];
   review: IReviewDocument["_id"];
 }
+
+export interface IUserDTO {
+  email: string;
+  first_name: string;
+  last_name: string;
+}

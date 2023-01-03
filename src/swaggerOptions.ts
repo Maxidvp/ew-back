@@ -4,6 +4,1802 @@ import swaggerJsDoc from "swagger-jsdoc";
 
 const options = {
   definition: {
+    "openapi": "3.0.3",
+    "info": {
+      title: "API: E-Wallet",
+      version: "1.0.0",
+      description: "API for E-Wallet",
+      "contact": {
+        "name": "Alkemy",
+        "email": "contacto@alkemy.org",
+        "url": "https://www.alkemy.org"
+      }
+    },
+
+    "servers": [
+      {
+        "description": "API Wallet",
+        "url": "https://ew-api.onrender.com"
+      }
+    ],
+
+    "tags": [
+      {
+        "name": "Auth",
+        description: "Authentication and authorization methods"
+      },
+      {
+        "name": "Users"
+      },
+      {
+        "name": "Accounts"
+      },
+      {
+        "name": "Transactions"
+      },
+      {
+        "name": "FixedTermDeposits"
+      }
+    ],
+
+    "paths": {
+
+    /*-----------------------------------------------------------------
+    |                             AUTH
+    |-----------------------------------------------------------------*/
+
+      "/auth/register": {
+        post: {
+          tags: [
+            "Auth"
+          ],
+          summary: "Create user",
+          description: "Crear un usuario.",
+          operationId: "createUser",
+          requestBody: {
+            description: "Created user object",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          responses: {
+            200: {
+              description: "successful operation",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/RegisterResult"
+                  }
+                }
+              }
+            },
+            403: {
+              description: "Combinacion de usuario o contrasena no encontrada",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "/auth/login": {
+        post: {
+          tags: [
+            "Auth"
+          ],
+          description: "Obtener un token JWT para autenticarse en el sistema",
+          summary: "Iniciar una sesion",
+          requestBody: {
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/LoginInput"
+                }
+              }
+            }
+          },
+          responses: {
+            200: {
+              description: "Sesion iniciada con exito",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/LoginResult"
+                  }
+                }
+              }
+            },
+            401: {
+              description: "Combinacion de usuario o contrasena no encontrada",
+              content: {
+                "application/json": {
+                  schema: {
+                    $ref: "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "TODO: /auth/me": {
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "auth"
+          ],
+          "summary": "Obtener informacion del usuario loggeado",
+          "description": "Obener la informacion del usuario que inicio la sesion",
+          "parameters": [""],
+          "responses": {
+            "200": {
+              "description": "Datos del usuario",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso (posible falta de token)",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /users": {
+        "post": {
+          "tags": [
+            "Users"
+          ],
+          "description": "Crear un usuario",
+          "summary": "Crear un usuario",
+          "parameters": [""],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Usuario creado exitosamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Error de servidor",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Users"
+          ],
+          "description": "Listar todos los usuarios",
+          "summary": "Listar todos los usuarios",
+          "parameters": [""],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Sin acceso de administrador",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /users/{id}": {
+        "get": {
+          "tags": [
+            "Users"
+          ],
+          "description": "Ver detalle de un usuario",
+          "summary": "Ver detalle de un usuario",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID del usuario"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "Modificar un usuario existente",
+          "description": "Modificar un usuario existente",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID del rol"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "summary": "Eliminar un usuario",
+          "tags": [
+            "Users"
+          ],
+          "description": "Elimina un usuario",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID del usuario"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Eliminacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /users/block/{accountId}": {
+        "patch": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Users"
+          ],
+          "summary": "Bloquear una cuenta del usuario",
+          "description": "Bloquear una cuenta del usuario, evitando que sea utilizada",
+          "parameters": [
+            {
+              "name": "accountId",
+              "in": "path",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Cuenta bloqueada satisfactoriamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OK"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "No se encuentra la cuenta que se quiere bloquear",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /users/unblock/{accountId}": {
+        "patch": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Users"
+          ],
+          "summary": "Desbloquear una cuenta del usuario",
+          "description": "Desbloquear una cuenta del usuario, permitiendo que sea utilizada",
+          "parameters": [
+            {
+              "name": "accountId",
+              "in": "path",
+              "required": true,
+              "type": "number"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Cuenta desbloqueada satisfactoriamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OK"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "No se encuentra la cuenta que se quiere desbloquear",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /users/resetPassword/{userId}": {
+        "patch": {
+          "tags": [
+            "Users"
+          ],
+          "summary": "Resetear contraseña",
+          "description": "Resetear la contraseña del usuario",
+          "parameters": [
+            {
+              "name": "userId",
+              "required": true,
+              "in": "path",
+              "type": "number"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangePasswordInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "La contraseña se reseteo satisfactoriamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OK"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "No se especifico el usuario a modificar",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Usuario inexistente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /users/product/{productId}": {
+        "patch": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Users"
+          ],
+          "summary": "Intercambiar puntos por un producto del catalogo",
+          "description": "Intercambiar puntos por un producto del catalogo",
+          "parameters": [
+            {
+              "name": "productId",
+              "required": true,
+              "in": "path",
+              "type": "number",
+              "description": "ID del producto que se desea intercambiar"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Puntos intercambiados exitosamente",
+              "content": {
+                "application/json": {
+                  "schemas": {
+                    "$ref": "#/components/schemas/OK"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Producto inexistente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "No se dispone de suficientes puntos",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /accounts": {
+        "post": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Accounts"
+          ],
+          "description": "Crear una cuenta",
+          "summary": "Crear una cuenta",
+          "parameters": [""],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Cuenta creada exitosamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Accounts"
+          ],
+          "description": "Listar todas las cuentas",
+          "summary": "Listar todas las cuentas",
+          "parameters": [""],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /accounts/me": {
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Accounts"
+          ],
+          "description": "Listar todas las cuentas del usuario loggeado",
+          "summary": "Listar las cuentas del usuario loggeado",
+          "responses": {
+            "200": {
+              "description": "Lista de cuentas del usuario loggeado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso (debe iniciar sesion)",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /accounts/{id}": {
+        "post": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Accounts"
+          ],
+          "description": "Depositar o transferir dinero hacia una cuenta",
+          "summary": "Depositar o transferir",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "Cuenta hacia la que se va a depositar o transferir el dinero"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepositOrTransfer"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Deposito o transferencia exitosos",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/OK"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "La cuenta origen no tiene suficiente saldo / Tipo de transaccion no valido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Cuenta origen o destino bloqueada",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "No se encontro cuenta de origen o destino",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Accounts"
+          ],
+          "description": "Ver detalle de una cuenta",
+          "summary": "Ver detalle de una cuenta",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID de la cuenta"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Accounts"
+          ],
+          "description": "Modificar una cuenta existente",
+          "summary": "Modificar una cuenta existente",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID de la cuenta"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Accounts"
+          ],
+          "description": "Eliminar una cuenta",
+          "summary": "Eliminar una cuenta",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID de la cuenta"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /fixeddeposits": {
+        "post": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "FixedTermDeposits"
+          ],
+          "description": "Crear un deposito a plazo fijo",
+          "summary": "Crear un deposito a plazo fijo",
+          "parameters": [""],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FixedTermDeposit"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Deposito creado exitosamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FixedTermDeposit"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "FixedTermDeposits"
+          ],
+          "description": "Listar todos depositos a plazo fijo del usuario",
+          "summary": "Listar depositos",
+          "parameters": [""],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FixedTermDeposit"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /fixeddeposits/{id}": {
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "FixedTermDeposits"
+          ],
+          "description": "Ver detalle de un deposito",
+          "summary": "Ver detalle de un deposito",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID del deposito"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FixedTermDeposit"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "FixedTermDeposits"
+          ],
+          "description": "Modificar un deposito a plazo fijo existente",
+          "summary": "Modificar un deposito a plazo fijo existente",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID del plazo fijo"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FixedTermDeposit"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FixedTermDeposit"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "FixedTermDeposits"
+          ],
+          "description": "Eliminar un deposito a plazo fijo",
+          "summary": "Eliminar un deposito a plazo fijo",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID del plazo fijo"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/FixedTermDeposit"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /transactions": {
+        "post": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Transactions"
+          ],
+          "description": "Crear una transaccion",
+          "summary": "Crear una transaccion",
+          "parameters": [""],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Transaccion creada exitosamente",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Transactions"
+          ],
+          "description": "Listar todas las transacciones del usuario",
+          "summary": "Listar todas las transacciones del usuario",
+          "parameters": [""],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TODO: /transactions/{id}": {
+        "get": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Transactions"
+          ],
+          "description": "Ver detalle de una transaccion",
+          "summary": "Ver detalle de una transaccion",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID de la transaccion"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Transactions"
+          ],
+          "description": "Modificar una transaccion existente",
+          "summary": "Modificar una transaccion",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID de la transaccion"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Transaction"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [
+            {
+              "BearerAuth": [""]
+            }
+          ],
+          "tags": [
+            "Transactions"
+          ],
+          "description": "Eliminar una transaccion",
+          "summary": "Eliminar una transaccion",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "ID de la transaccion"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Operacion exitosa",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Transaction"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Sin acceso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            },
+            "403": {
+              "description": "Acceso prohibido",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Error"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    /*-----------------------------------------------------------------
+    |
+    |                             SCHEMAS
+    |
+    |-----------------------------------------------------------------*/
+
+    "components": {
+      "schemas": {
+        User: {
+          type: "object",
+          properties: {
+            first_name: {
+              type: "string",
+              description: "Nombre del usuario",
+              example: "Juan"
+            },
+            last_name: {
+              type: "string",
+              description: "Apellido del usuario",
+              example: "Perez"
+            },
+            email: {
+              type: "string",
+              description: "Correo electronico del usuario (se usa al iniciar sesion)",
+              example: "juanperez@example.com"
+            },
+            password: {
+              type: "string",
+              description: "Contrasena del usuario (se usa al iniciar sesion)",
+              example: "abc123"
+            }
+          }
+        },
+        RegisterResult:{
+          type: "object",
+          properties: {
+            message: {
+              type: "string",
+              description: "Descripción",
+              example: "User registered successfully"
+            },
+            email: {
+              type: "string",
+              description: "Registered email",
+              example: "user@gmail.com"
+            },
+          }
+        },
+        LoginInput: {
+          type: "object",
+          properties: {
+            email: {
+              type: "string",
+              description: "Correo electronico del usuario que iniciara la sesion",
+              example: "juanperez@example.com"
+            },
+            password: {
+              type: "string",
+              description: "Contrasena del usuario que iniciara la sesion",
+              example: "abc123"
+            }
+          }
+        },
+        LoginResult: {
+          type: "object",
+          properties: {
+            message: {
+              type: "string",
+              description: "Descripción",
+              example: "User registered successfully"
+            },
+            accessToken: {
+              type: "string",
+              description: "El token JWT que debera enviarse posteriormente a los endpoints",
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQi..."
+            }
+          }
+        },
+        "TODO: Account": {
+          "type": "object",
+          "properties": {
+            "creationDate": {
+              "type": "string",
+              "description": "Fecha de creacion de la cuenta",
+              "example": "2022-10-26 10:00:00"
+            },
+            "money": {
+              "type": "number",
+              "description": "Cantidad de dinero que la cuenta posee",
+              "example": 150
+            },
+            "isBlocked": {
+              "type": "boolean",
+              "description": "Determina si la cuenta esta bloqueada o no",
+              "example": false
+            },
+            "userId": {
+              "type": "number",
+              "description": "Es el usuario dueno de la cuenta",
+              "example": 1
+            }
+          }
+        },
+        "TODO: FixedTermDeposit": {
+          "type": "object",
+          "properties": {
+            "userId": {
+              "type": "number",
+              "description": "El ID del usuario al que pertenece el plazo fijo",
+              "example": 1
+            },
+            "accountId": {
+              "type": "number",
+              "description": "El ID de la cuenta donde se realiza el plazo fijo",
+              "example": 1
+            },
+            "amount": {
+              "type": "number",
+              "description": "La cantidad de dinero en el plazo fijo",
+              "example": 100
+            },
+            "creation_date": {
+              "type": "string",
+              "description": "La fecha de creacion del plazo fijo",
+              "example": "2022-10-26"
+            },
+            "closing_date": {
+              "type": "string",
+              "description": "La fecha de cierre del plazo fijo",
+              "example": "2022-11-26"
+            }
+          }
+        },
+        "TODO: Transaction": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number",
+              "description": "Cantidad de dinero correspondiente a la transaccion",
+              "example": 500
+            },
+            "concept": {
+              "type": "string",
+              "description": "Descripcion de la transaccion",
+              "example": "Pago de honorarios"
+            },
+            "date": {
+              "type": "string",
+              "description": "Fecha de la transaccion",
+              "example": "2022-10-26 15:00:00"
+            },
+            "type": {
+              "type": "string",
+              "description": "Tipo de transaccion ('topup' o 'payment')",
+              "example": "topup|payment"
+            },
+            "accountId": {
+              "type": "number",
+              "description": "Cuenta origen de la transaccion",
+              "example": 1
+            },
+            "userId": {
+              "type": "number",
+              "description": "Usuario originante de la transaccion",
+              "example": 4
+            },
+            "to_account_id": {
+              "type": "number",
+              "description": "Cuenta destino de la transaccion",
+              "example": 5
+            }
+          }
+        },
+        "Error": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "type": "string",
+              "description": "Mensaje descriptivo del error que se produjo",
+              "example": "No autorizado"
+            },
+            "status": {
+              "type": "number",
+              "description": "Codigo de error HTTP",
+              "example": 401
+            }
+          }
+        },
+        "TODO: ChangePasswordInput": {
+          "type": "object",
+          "properties": {
+            "password": {
+              "type": "string",
+              "description": "La nueva contraseña que se quiere establecer",
+              "example": "abc123"
+            }
+          }
+        },
+
+        "TODO: OK": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string",
+              "description": "Resultado de la operacion"
+            }
+          }
+        },
+        "TODO: DepositOrTransfer": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "description": "Tipo de operacion: 'topup' si se hace un deposito; 'payment' si se hace una transferencia",
+              "example": "topup | payment"
+            },
+            "concept": {
+              "type": "string",
+              "description": "Descripcion de la operacion"
+            },
+            "amount": {
+              "type": "number",
+              "description": "Cantidad de dinero a depositar o transferir"
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      }
+    }
+  },
+
+  apis: ["./routes/*"]
+}
+
+// Docs in JSON format
+export const specs = swaggerJsDoc(options);
+
+
+
+
+
+
+
+/*
+
+a borrar
+
+  //Definicion original
+  /*definition: {
     openapi: "3.0.0",
     info: {
       title: "API: Plants of Nursery",
@@ -923,137 +2719,5 @@ const options = {
       }
     }
   },
-  apis: ["./routes/*"]
-}
-
-// Docs in JSON format
-export const specs = swaggerJsDoc(options);
-
-/* components: {
-      schemas: {
-        Nursery: {
-          type: 'object',
-          required: ['username', 'email', 'password', 'birthday', 'province', 'city', 'addres'],
-          properties: {
-            username: {
-              type: 'string',
-              description: 'The manager of nursery'
-            },
-            email: {
-              type: 'string',
-              description: 'The nursery email'
-            },
-            password: {
-                type: 'string',
-                description: 'The nursery password'
-            },
-            birthday: {
-              type: 'string',
-              description: 'The nursery birthday'
-            },
-            province: {
-              type: 'string',
-              description: 'The nursery province'
-            },
-            city: {
-              type: 'string',
-              description: 'The nursery city'
-            },
-            addres: {
-              type: 'string',
-              description: 'The nursery addres'
-            },
-            example: {
-                username: 'John Doe',
-                email: 'blabla@plantas.com',
-                password: 'This is a password',
-                birthday: 1995,
-                prince: 'bs as',
-                city: 'avellaneda',
-                addres: 'calle falsa 123'
-            }
-          }
-        }
-      }
-    }
-  },
-  apis: ["./routes/nursery.routes"] */
-
-/* 
-  const options = {
-    definition: {
-      openapi: "3.0.0",
-      info: {
-        title: "Bookstore CRUD REST API",
-        version: "1.0.0",
-        description:
-          "This is a simple CRUD API application made with Express and documented with Swagger"
-      },
-      servers: [
-        {
-          url: "http://localhost:3000",
-          description: 'Development server'
-        },
-      ],
-      components: {
-        schemas: {
-            Book: {
-                type: 'object',
-                required: ['title', 'author', 'price', 'year_published'],
-                properties: {
-                    author: {
-                        type: 'string',
-                        description: 'The author of the book'
-                    },
-                    price: {
-                        type: 'integer',
-                        description: 'The price of the book'
-                    },
-                    description: {
-                        type: 'string',
-                        description: 'The description of the book'
-                    },
-                    year_published: {
-                        type: 'string',
-                        description: 'The year the book was published'
-                    }
-                },
-                example: {
-                    author: 'John Doe',
-                    price: 199,
-                    description: 'This is a description of a book',
-                    year_published: 2022
-                }
-            }
-        },
-        responses : {
-            400: {
-                description: 'Missing API key - include it in the Authorization header',
-                contents: 'application/json'
-            },
-            401: {
-                description: 'Unauthorized - incorrect API key or incorrect format',
-                contents: 'application/json'
-            },
-            404: {
-                description: 'Not found - the book was not found',
-                contents: 'application/json'
-            }
-        },
-        securitySchemes: {
-            ApiKeyAuth: {
-                type: 'apiKey',
-                in: 'header',
-                name: 'Authorization'
-            }
-          }
-      },
-      security: [{
-        ApiKeyAuth: []
-      }]
-
-    },
-    apis: ["./app/routes/book.js"],
-}
-
-module.exports = options */
+  
+  */

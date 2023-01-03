@@ -39,20 +39,18 @@ app.use(express.json());
 
 //routes
 import userRoutes from "./routes/user.routes";
-import nurseryRoutes from "./routes/nursery.routes";
 import plantsRoutes from "./routes/plants.routes";
 import reviewRoutes from "./routes/reviews.routes";
 
 app.use("/docs/api/v1", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/auth", userRoutes);
-app.use("/auth/nursery", nurseryRoutes);
 app.use("/plants", plantsRoutes);
 app.use("/reviews", reviewRoutes);
 
 //test
 app.get("/", (req: Request, res: Response) => {
-  console.log("work");
-  res.status(200).send("work");
+  console.log("E-Wallet API");
+  res.status(200).send("E-Wallet API");
 });
 
 export default app;
