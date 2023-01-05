@@ -3,10 +3,6 @@ import { Transaction } from "../../interfaces/transactions.interface";
 
 const transactionSchema = new mongoose.Schema<Transaction>(
   {
-    transactionId: {
-      type: String,
-      required: true,
-    },
     accountType: {
       type: String,
       required: true,
@@ -14,12 +10,6 @@ const transactionSchema = new mongoose.Schema<Transaction>(
     transactionAmount: {
       type: Number,
       required: true,
-      min: 0,
-    },
-    transactionCreationDate: {
-      type: Number,
-      required: false,
-      default: Date.now,
     },
     transactionType: {
       type: String,
@@ -28,6 +18,11 @@ const transactionSchema = new mongoose.Schema<Transaction>(
     userId: {
       type: String,
       required: true,
+    },
+    userIdTransferTo: {
+      type: String,
+      required: false,
+      default: null
     },
   },
   { timestamps: true }

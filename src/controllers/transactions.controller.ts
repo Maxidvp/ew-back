@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { Transaction } from "../interfaces/transactions.interface";
-import {nanoid} from "nanoid";
+import { Exchange, Transaction, TransactionType } from "../interfaces/transactions.interface";
 import { createTransactionDB } from "../services/transactions.service";
 
 //Alls transactions controller
@@ -9,25 +8,23 @@ export const createTransaction = async (req: Request, res: Response) => {
     const {
       userId,
       transactionAmount,
-      transactionType,
-      accountType
     } = req.body;
     
-    const newTransaction: Transaction = {
+    const accountType = req.url.split("/")[1] as Exchange;
+    const transactionType = req.url.split("/")[2] as TransactionType;
 
-        accountType,
-        transactionAmount,
-        transactionType,
-        userId,
-        transactionId: nanoid(),
-        transactionCreationDate: Date.now()
-        
+    console.log();
+    const newTransaction: Transaction = {
+      accountType ,
+      transactionAmount,
+      transactionType ,
+      userId,
     };
 
     const transaction = await createTransactionDB(newTransaction);
 
     return res.send({
-      message: "Transaction completed successfully"
+      message: ` ${transactionAmount} ${accountType} ${transactionType} done succefully `
     }); 
   } catch (err: any) {
     return res.status(409).send("Error  " + err);
