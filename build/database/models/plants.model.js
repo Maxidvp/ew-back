@@ -9,7 +9,6 @@ const plantsSchema = new mongoose_1.default.Schema({
     info: { type: Object, required: false },
     imgs: [{ type: String, required: false }],
     location: { type: Object, required: false },
-    nursery: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "Nursery" },
 }, { timestamps: true });
 const PlantsModel = mongoose_1.default.model("Plants", plantsSchema);
 exports.default = PlantsModel;

@@ -35,17 +35,15 @@ app.use((0, morgan_1.default)("dev"));
 app.use(express_1.default.json());
 //routes
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
-const nursery_routes_1 = __importDefault(require("./routes/nursery.routes"));
 const plants_routes_1 = __importDefault(require("./routes/plants.routes"));
 const reviews_routes_1 = __importDefault(require("./routes/reviews.routes"));
 app.use("/docs/api/v1", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerOptions_1.specs));
 app.use("/auth", user_routes_1.default);
-app.use("/auth/nursery", nursery_routes_1.default);
 app.use("/plants", plants_routes_1.default);
 app.use("/reviews", reviews_routes_1.default);
 //test
 app.get("/", (req, res) => {
-    console.log("work");
-    res.status(200).send("work");
+    console.log("E-Wallet API");
+    res.status(200).send("E-Wallet API");
 });
 exports.default = app;

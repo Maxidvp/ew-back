@@ -9,7 +9,6 @@ const plantsSchema = new mongoose.Schema<IPlantsDocument>(
     info: { type: Object, required: false },
     imgs: [{ type: String, required: false }],
     location: { type: Object, required: false },
-    nursery: { type: mongoose.Schema.Types.ObjectId, ref: "Nursery" },
   },
   { timestamps: true }
 );

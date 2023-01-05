@@ -30,13 +30,15 @@ exports.authUserValidator = [
         .withMessage("Password must have at least six (6) characters long")
         .isLength({ max: 20 })
         .withMessage("Password can't have more than twenty (20) characters")
-        .isStrongPassword({
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-    })
-        .withMessage("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and special characters")
+        /*.isStrongPassword({
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1,
+        })
+        .withMessage(
+          "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and special characters"
+        )*/
         .not()
         .isEmpty()
         .withMessage("Password cannot be empty"),
@@ -130,13 +132,15 @@ exports.authNurseryValidator = [
         .withMessage("Password must have at least six (6) characters long")
         .isLength({ max: 20 })
         .withMessage("Password can't have more than twenty (20) characters")
-        .isStrongPassword({
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-    })
-        .withMessage("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and special characters")
+        /*.isStrongPassword({
+          minLowercase: 1,
+          minUppercase: 1,
+          minNumbers: 1,
+          minSymbols: 1,
+        })
+        .withMessage(
+          "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and special characters"
+        )*/
         .not()
         .isEmpty()
         .withMessage("Password cannot be empty"),

@@ -26,7 +26,7 @@ const comparePassword = (password, userPassword) => __awaiter(void 0, void 0, vo
 });
 exports.comparePassword = comparePassword;
 const signToken = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const token = jsonwebtoken_1.default.sign(payload, "secret", { expiresIn: "45m" });
+    const token = jsonwebtoken_1.default.sign(payload, "secret", { expiresIn: "1d" });
     return token;
 });
 exports.signToken = signToken;

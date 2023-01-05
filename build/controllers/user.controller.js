@@ -27,7 +27,12 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             social,
         };
         const user = yield (0, user_service_1.createUser)(newUser);
-        return res.send({ message: "User registered successfully", user });
+        const userDTO = {
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name
+        };
+        return res.send({ message: "User registered successfully", email: user.email }); //user:userDTO
     }
     catch (err) {
         return res.status(409).send("Error at register " + err);
@@ -46,13 +51,17 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         //data para encriptar
         const encrypt = {
             _id: validate._id,
+            email: email
         };
         //sign payload
         const token = yield (0, jwt_1.signToken)(encrypt);
         //generar refresh token
         return res
             .header("Authorization", token)
-            .send({ message: "User succesffully auth" });
+            .send({
+            message: "User succesffully auth",
+            accessToken: token
+        });
     }
     catch (err) {
         return res.status(409).send(err);
