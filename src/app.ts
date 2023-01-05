@@ -41,11 +41,14 @@ app.use(express.json());
 import userRoutes from "./routes/user.routes";
 import plantsRoutes from "./routes/plants.routes";
 import reviewRoutes from "./routes/reviews.routes";
+import transactionRoutes from "./routes/transactions.routes";
 
 app.use("/docs/api/v1", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/auth", userRoutes);
 app.use("/plants", plantsRoutes);
 app.use("/reviews", reviewRoutes);
+
+app.use('/accounts', transactionRoutes)
 
 //test
 app.get("/", (req: Request, res: Response) => {
