@@ -50,7 +50,19 @@ export const findAll = async () => {
 
 export const findById = async (id: string) => {
   try {
-    const user = await UserModel.findOne({ _id: id });
+    const user = await UserModel.findById({ _id: id });
+    if (!user) return false;
+
+    return user;
+    //return await UserRepo.findOne(id);
+  } catch (err: any) {
+    throw new Error(err);
+  }
+};
+
+export const findByEmail = async (email: string) => {
+  try {
+    const user = await UserModel.findOne({ email: email }, 'first_name last_name');
     if (!user) return false;
 
     return user;

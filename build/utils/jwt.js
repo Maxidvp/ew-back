@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateToken = exports.signToken = exports.comparePassword = exports.hashPassword = void 0;
+exports.decodeToken = exports.validateToken = exports.signToken = exports.comparePassword = exports.hashPassword = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,8 +30,14 @@ const signToken = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     return token;
 });
 exports.signToken = signToken;
-const validateToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+const validateToken = (bearToken) => __awaiter(void 0, void 0, void 0, function* () {
+    const token = bearToken.replace('Bearer ', '');
     const validate = jsonwebtoken_1.default.verify(token, "secret");
     return validate;
 });
 exports.validateToken = validateToken;
+const decodeToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    const decode = jsonwebtoken_1.default.decode(token);
+    return decode;
+});
+exports.decodeToken = decodeToken;

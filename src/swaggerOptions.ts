@@ -1617,7 +1617,7 @@ const options = {
               description: "Descripción",
               example: "User registered successfully"
             },
-            accessToken: {
+            token: {
               type: "string",
               description: "El token JWT que debera enviarse posteriormente a los endpoints",
               example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQi..."

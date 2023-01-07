@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeUser = exports.updateUserById = exports.getUserById = exports.getUsers = exports.loginUser = exports.registerUser = void 0;
+exports.removeUser = exports.updateUserById = exports.getUserById = exports.getUsers = exports.getMe = exports.loginUser = exports.registerUser = void 0;
 const user_service_1 = require("../services/user.service");
 const jwt_1 = require("../utils/jwt");
 //register controller
@@ -48,6 +48,10 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!validate) {
             return res.status(401).send("Wrong email or password");
         }
+        const user = yield (0, user_service_1.findByEmail)(email);
+        if (!user) {
+            return res.status(401).send("DB Problem");
+        }
         //data para encriptar
         const encrypt = {
             _id: validate._id,
@@ -60,7 +64,10 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             .header("Authorization", token)
             .send({
             message: "User succesffully auth",
-            accessToken: token
+            token: token,
+            email: email,
+            first_name: user.first_name,
+            last_name: user.last_name
         });
     }
     catch (err) {
@@ -68,6 +75,26 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.loginUser = loginUser;
+//find loged user
+const getMe = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log('res.locals.payload', res.locals.payload, res.locals.payload._id);
+        const user = yield (0, user_service_1.findById)(res.locals.payload._id);
+        console.log('user', user);
+        if (!user) {
+            return res.status(401).send("DB Problem");
+        }
+        return res.send({
+            email: user.email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+        });
+    }
+    catch (err) {
+        return res.status(409).send(err);
+    }
+});
+exports.getMe = getMe;
 //find all users in DB
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

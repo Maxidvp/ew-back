@@ -16,6 +16,7 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     if (!token)
         return res.status(403).send("Access denied");
     const payload = yield (0, jwt_1.validateToken)(token);
+    res.locals.payload = payload;
     if (!payload)
         return res.status(403).send("Access denied");
     next();

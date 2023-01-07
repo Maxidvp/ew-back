@@ -21,11 +21,11 @@ const whiteList = [process.env.ORIGIN1];
 // Cors
 app.use((0, cors_1.default)({
     origin: function (origin, callback) {
-        console.log("Conectando=>", origin);
-        if (!origin || whiteList.includes(origin)) {
+        console.log("Conectando=> ", origin);
+        if (!origin || whiteList.includes(origin) || whiteList[0] == '*') {
             return callback(null, origin);
         }
-        console.log("Conectando=>", origin);
+        console.log("Error de CORS origin: " + origin + " No autorizado!");
         return "Error de CORS origin: " + origin + " No autorizado!";
     },
     credentials: true,
@@ -37,13 +37,15 @@ app.use(express_1.default.json());
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const plants_routes_1 = __importDefault(require("./routes/plants.routes"));
 const reviews_routes_1 = __importDefault(require("./routes/reviews.routes"));
+const transactions_routes_1 = __importDefault(require("./routes/transactions.routes"));
 app.use("/docs/api/v1", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerOptions_1.specs));
 app.use("/auth", user_routes_1.default);
 app.use("/plants", plants_routes_1.default);
 app.use("/reviews", reviews_routes_1.default);
+app.use('/accounts', transactions_routes_1.default);
 //test
 app.get("/", (req, res) => {
     console.log("E-Wallet API");
-    res.status(200).send("E-Wallet API");
+    res.status(200).send("E-Wallet API V0.1");
 });
 exports.default = app;

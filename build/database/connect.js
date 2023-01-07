@@ -20,7 +20,7 @@ function connect() {
         const DB_NAME = config_1.default.get("DB_NAME");
         try {
             yield mongoose_1.default.connect(URI_DB, { dbName: DB_NAME });
-            console.log("DB connected successfully");
+            console.log("DB connected successfully ");
         }
         catch (error) {
             console.log("Could not connect to db \n" + error);

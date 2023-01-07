@@ -17,16 +17,15 @@ app.set("port", port);
 
 // Config whitelist
 const whiteList = [process.env.ORIGIN1];
-
 // Cors
 app.use(
   cors({
     origin: function (origin, callback) {
       console.log("Conectando=> ", origin);
-      if (!origin || whiteList.includes(origin)) {
+      if (!origin || whiteList.includes(origin) || whiteList[0]=='*') {
         return callback(null, origin);
       }
-      console.log("Conectando=> ", origin);
+      console.log("Error de CORS origin: " + origin + " No autorizado!");
       return "Error de CORS origin: " + origin + " No autorizado!";
     },
     credentials: true,
@@ -53,7 +52,7 @@ app.use('/accounts', transactionRoutes)
 //test
 app.get("/", (req: Request, res: Response) => {
   console.log("E-Wallet API");
-  res.status(200).send("E-Wallet API");
+  res.status(200).send("E-Wallet API V0.1");
 });
 
 export default app;

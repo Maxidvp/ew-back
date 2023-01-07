@@ -20,7 +20,13 @@ export const signToken = async (payload: {}) => {
   return token;
 };
 
-export const validateToken = async (token: string) => {
+export const validateToken = async (bearToken: string) => {
+  const token = bearToken.replace('Bearer ','')
   const validate = jwt.verify(token, "secret");
   return validate;
+};
+
+export const decodeToken = async (token: string) => {
+  const decode = jwt.decode(token);
+  return decode;
 };

@@ -4,11 +4,12 @@ import {
   createUser,
   findAll,
   findById,
+  findByEmail,
   validatePassword,
   updateUser,
   deleteUser,
 } from "../services/user.service";
-import { hashPassword, signToken } from "../utils/jwt";
+import { decodeToken, hashPassword, signToken } from "../utils/jwt";
 
 //register controller
 export const registerUser = async (req: Request, res: Response) => {
@@ -52,6 +53,11 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(401).send("Wrong email or password");
     }
 
+    const user = await findByEmail(email);
+    if(!user) {
+      return res.status(401).send("DB Problem");
+    }
+
     //data para encriptar
     const encrypt = {
       _id: validate._id,
@@ -67,10 +73,35 @@ export const loginUser = async (req: Request, res: Response) => {
       .header("Authorization", token)
       .send({ 
         message: "User succesffully auth",
-        accessToken: token
+        token: token,
+        email : email,
+        first_name : user.first_name,
+        last_name : user.last_name
       });
   } catch (err: any) {
     return res.status(409).send(err);
+  }
+};
+
+//find loged user
+export const getMe = async (req: Request, res: Response) => {
+  try {
+    console.log('res.locals.payload',res.locals.payload,res.locals.payload._id)
+    const user = await findById(res.locals.payload._id);
+    console.log('user',user)
+    if(!user) {
+      return res.status(401).send("DB Problem");
+    }
+    return res.send(
+      {
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+      }
+    )
+
+  } catch (err: any) {
+    return res.status(409).send(err)
   }
 };
 

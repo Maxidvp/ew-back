@@ -7,6 +7,7 @@ const verifyToken_1 = require("../middlewares/validators/verifyToken");
 const userRoutes = (0, express_1.Router)();
 userRoutes.post("/register", validators_1.authUserValidator, user_controller_1.registerUser);
 userRoutes.post("/login", validators_1.loginValidator, user_controller_1.loginUser);
+userRoutes.get("/me", verifyToken_1.verifyToken, user_controller_1.getMe);
 userRoutes.get("/", verifyToken_1.verifyToken, user_controller_1.getUsers);
 userRoutes.get("/:id", verifyToken_1.verifyToken, user_controller_1.getUserById);
 userRoutes.put("/:id", verifyToken_1.verifyToken, user_controller_1.updateUserById);

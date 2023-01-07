@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.findById = exports.findAll = exports.validatePassword = exports.createUser = void 0;
+exports.deleteUser = exports.updateUser = exports.findByEmail = exports.findById = exports.findAll = exports.validatePassword = exports.createUser = void 0;
 const user_model_1 = __importDefault(require("../database/models/user.model"));
 const jwt_1 = require("../utils/jwt");
 //test
@@ -55,7 +55,7 @@ const findAll = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.findAll = findAll;
 const findById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_model_1.default.findOne({ _id: id });
+        const user = yield user_model_1.default.findById({ _id: id });
         if (!user)
             return false;
         return user;
@@ -66,6 +66,19 @@ const findById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.findById = findById;
+const findByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.default.findOne({ email: email }, 'first_name last_name');
+        if (!user)
+            return false;
+        return user;
+        //return await UserRepo.findOne(id);
+    }
+    catch (err) {
+        throw new Error(err);
+    }
+});
+exports.findByEmail = findByEmail;
 // Update User
 const updateUser = (id, input) => __awaiter(void 0, void 0, void 0, function* () {
     try {
