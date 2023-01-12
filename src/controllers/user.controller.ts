@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { IUser, IUserDTO } from "../interfaces/user.interface";
+import { newError } from "../middlewares/errorHandler/errorMiddleware";
 import {
   createUser,
   findAll,
@@ -13,171 +14,130 @@ import { decodeToken, hashPassword, signToken } from "../utils/jwt";
 
 //register controller
 export const registerUser = async (req: Request, res: Response) => {
-  try {
-    const { username, email, password, first_name, last_name,birthdate, img, social } = req.body;
 
-    const newUser: Omit<IUser, "review" | "role" > = {
-      username,
-      email,
-      password,
-      first_name,
-      last_name,
-      birthdate,
-      img,
-      social,
-    };
+  const { username, email, password, first_name, last_name, birthdate, img, social } = req.body;
 
-    const user = await createUser(newUser);
+  const newUser: Omit<IUser, "review" | "role"> = {
+    username,
+    email,
+    password,
+    first_name,
+    last_name,
+    birthdate,
+    img,
+    social,
+  };
 
-    const userDTO: IUserDTO = {
-      email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name
-    }
-    return res.send({ message: "User registered successfully", email: user.email });//user:userDTO
-  } catch (err: any) {
-    return res.status(409).send("Error at register " + err);
+  const user = await createUser(newUser);
+
+  const userDTO: IUserDTO = {
+    email: user.email,
+    first_name: user.first_name,
+    last_name: user.last_name
   }
+  return res.send({ message: "User registered successfully", email: user.email });//user:userDTO
 };
 
 //login controller
-export const loginUser = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
-    const userValidation = { email, password };
 
-    const validate = await validatePassword(userValidation);
+  const { email, password } = req.body;
+  const userValidation = { email, password };
 
-    if (!validate) {
-      return res.status(401).send("Wrong email or password");
-    }
+  const validate = await validatePassword(userValidation);
+  if (!validate) return next(newError(401, "Wrong email or password"));
 
-    const user = await findByEmail(email);
-    if(!user) {
-      return res.status(401).send("DB Problem");
-    }
+  const user = await findByEmail(email);
+  if (!user) return next(newError(404, "User not found"));
 
-    //data para encriptar
-    const encrypt = {
-      _id: validate._id,
-      email : email
-    };
+  //data para encriptar
+  const encrypt = {
+    _id: validate._id,
+    email: email
+  };
 
-    //sign payload
-    const token = await signToken(encrypt);
+  //sign payload
+  const token = await signToken(encrypt);
 
-    //generar refresh token
-
-    return res
-      .header("Authorization", token)
-      .send({ 
-        message: "User succesffully auth",
-        token: token,
-        email : email,
-        first_name : user.first_name,
-        last_name : user.last_name
-      });
-  } catch (err: any) {
-    return res.status(409).send(err);
-  }
+  return res
+    .header("Authorization", token)
+    .send({
+      message: "User succesffully auth",
+      token: token,
+      email: email,
+      first_name: user.first_name,
+      last_name: user.last_name
+    });
 };
 
 //find loged user
-export const getMe = async (req: Request, res: Response) => {
-  try {
-    console.log('res.locals.payload',res.locals.payload,res.locals.payload._id)
-    const user = await findById(res.locals.payload._id);
-    console.log('user',user)
-    if(!user) {
-      return res.status(401).send("DB Problem");
-    }
-    return res.send(
-      {
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
-      }
-    )
+export const getMe = async (req: Request, res: Response, next: NextFunction) => {
 
-  } catch (err: any) {
-    return res.status(409).send(err)
-  }
+  console.log('res.locals.payload', res.locals.payload, res.locals.payload._id)
+  const user = await findById(res.locals.payload._id);
+  if (!user) return next(newError(404, "User not found"));
+
+  return res.send(
+    {
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+    }
+  )
 };
 
 //find all users in DB
 export const getUsers = async (req: Request, res: Response) => {
-  try {
-    const users = await findAll();
 
-    return res.send(users);
-  } catch (err: any) {
-    return res.status(409).send(err);
-  }
+  const users = await findAll();
+  return res.send(users);
 };
 
 //find one user by ID
 export const getUserById = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
 
-    const user = await findById(id);
-
-    return res.send(user);
-  } catch (err: any) {
-    return res.status(404).send("User not found");
-  }
+  const { id } = req.params;
+  const user = await findById(id);
+  return res.send(user);
 };
 
 // update user by ID
-export const updateUserById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const user = await findById(id);
-  if (!user) {
-    return res.status(404).send("User not found");
-  }
+export const updateUserById = async (req: Request, res: Response, next: NextFunction) => {
 
-  const { email, username, password, first_name, last_name, birthdate, img, social  } = req.body;
+  const { id } = req.params;
+  const userExist = await findById(id);
+  if (!userExist) return next(newError(404, "User not found"));
+
+  const { email, username, password, first_name, last_name, birthdate, img, social } = req.body;
 
   //const hash = await hashPassword(password);
   //const hashUsername = await hashPassword(user.password);
 
   const newUser = {
-    email: email ? email : user.email,
-    username: username ? username : user.username,
-    password: password ? password : user.password,
-    first_name: first_name ? first_name : user.first_name,
-    last_name: last_name ? last_name : user.last_name,
-    birthdate: birthdate ? birthdate : user.birthdate,
-    img: img ? img : user.img,
-    social: social ? social : user.social,
+    email: email ? email : userExist.email,
+    username: username ? username : userExist.username,
+    password: password ? password : userExist.password,
+    first_name: first_name ? first_name : userExist.first_name,
+    last_name: last_name ? last_name : userExist.last_name,
+    birthdate: birthdate ? birthdate : userExist.birthdate,
+    img: img ? img : userExist.img,
+    social: social ? social : userExist.social,
   };
-  try {
-    const user = await updateUser(id, newUser);
 
-    return res.send(user);
-  } catch (err: any) {
-    return res.status(400).send("Error updating User " + err);
-  }
+  const user = await updateUser(id, newUser);
+  return res.send(user);
 };
 
 // User Delete of the BBDD
-export const removeUser = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const { email, password, username } = req.body;
+export const removeUser = async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!email || !password || !username)
-      return res.status(404).send("No existe el link");
+  const { id } = req.params;
+  const { email, password, username } = req.body;
 
-    const userDelete = { email, password, username };
-    const userRemove = await deleteUser(id, userDelete);
+  /* if (!email || !password || !username) return next(newError(400, "Email, password or username missing")); 
+  const userDelete = { email, password, username }; */
 
-    return res.status(200).send(`El usuario ${userRemove} fue eliminado`);
-  } catch (error: any) {
-    if (error.kind === "ObjectId") {
-      return res.status(403).send("Fomrato User ID not found");
-    }
-    return res.status(500).send("Error del servidor");
-  }
+  const userRemove = await deleteUser(id);
+  return res.status(200).send(`El usuario ${userRemove.email} fue eliminado`);
 };
