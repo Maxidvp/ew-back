@@ -86,9 +86,7 @@ export const loginUser = async (req: Request, res: Response) => {
 //find loged user
 export const getMe = async (req: Request, res: Response) => {
   try {
-    console.log('res.locals.payload',res.locals.payload,res.locals.payload._id)
     const user = await findById(res.locals.payload._id);
-    console.log('user',user)
     if(!user) {
       return res.status(401).send("DB Problem");
     }

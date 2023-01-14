@@ -5,7 +5,7 @@ export class Transaction {
   
   userId: string;
   userIdTransferTo? : string ;
-  transactionAmount: number;
+  amount: number;
   transactionType: TransactionType;
   accountType: Exchange;
 

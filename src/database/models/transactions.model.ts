@@ -7,7 +7,7 @@ const transactionSchema = new mongoose.Schema<Transaction>(
       type: String,
       required: true,
     },
-    transactionAmount: {
+    amount: {
       type: Number,
       required: true,
     },

@@ -7,7 +7,7 @@ export const createTransaction = async (req: Request, res: Response) => {
   try {
     const {
       userId,
-      transactionAmount,
+      amount,
     } = req.body;
     
     const accountType = req.url.split("/")[1] as Exchange;
@@ -16,7 +16,7 @@ export const createTransaction = async (req: Request, res: Response) => {
     console.log();
     const newTransaction: Transaction = {
       accountType ,
-      transactionAmount,
+      amount,
       transactionType ,
       userId,
     };
@@ -24,7 +24,7 @@ export const createTransaction = async (req: Request, res: Response) => {
     const transaction = await createTransactionDB(newTransaction);
 
     return res.send({
-      message: ` ${transactionAmount} ${accountType} ${transactionType} done succefully `
+      message: ` ${amount} ${accountType} ${transactionType} done succefully `
     }); 
   } catch (err: any) {
     return res.status(409).send("Error  " + err);

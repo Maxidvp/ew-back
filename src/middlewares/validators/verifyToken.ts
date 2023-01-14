@@ -10,8 +10,8 @@ export const verifyToken = async (
   if (!token) return res.status(403).send("Access denied");
 
   const payload = await validateToken(token);
-  res.locals.payload = payload
   if (!payload) return res.status(403).send("Access denied");
+  res.locals.payload = payload
 
   next();
 };
