@@ -38,6 +38,14 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       type: mongoose.Types.ObjectId,
       ref: "Review",
     },
+    ARSAccount: {
+      type: mongoose.Types.ObjectId,
+      ref: "Account",
+    },
+    USDAccount: {
+      type: mongoose.Types.ObjectId,
+      ref: "Account",
+    }
   },
   { timestamps: true }
 );

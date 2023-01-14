@@ -22,7 +22,7 @@ app.use(
   cors({
     origin: function (origin, callback) {
       console.log("Conectando=> ", origin);
-      if (!origin || whiteList.includes(origin) || whiteList[0]=='*') {
+      if (!origin || whiteList.includes(origin) || whiteList[0] == '*') {
         return callback(null, origin);
       }
       console.log("Error de CORS origin: " + origin + " No autorizado!");
@@ -41,18 +41,27 @@ import userRoutes from "./routes/user.routes";
 import plantsRoutes from "./routes/plants.routes";
 import reviewRoutes from "./routes/reviews.routes";
 import transactionRoutes from "./routes/transactions.routes";
+import { globalNext, newError, returnError, routeNotFound, setGlobalMiddlewares } from "./middlewares/errorHandler/errorMiddleware";
 
+app.use(setGlobalMiddlewares);
 app.use("/docs/api/v1", swaggerUI.serve, swaggerUI.setup(specs));
 app.use("/auth", userRoutes);
 app.use("/plants", plantsRoutes);
 app.use("/reviews", reviewRoutes);
+app.use('/accounts', transactionRoutes);
+app.use('*', routeNotFound);
 
-app.use('/accounts', transactionRoutes)
+process.on("unhandledRejection", (error: Error) => {
+  console.log('unhandled', error);
+  globalNext(newError(500, error.message));
+});
+
+app.use(returnError);
 
 //test
 app.get("/", (req: Request, res: Response) => {
   console.log("E-Wallet API");
-  res.status(200).send("E-Wallet API V0.1");
+  res.status(200).send("E-Wallet API V0.3");
 });
 
 export default app;

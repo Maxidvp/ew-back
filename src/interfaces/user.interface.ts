@@ -1,5 +1,6 @@
 import { IRolesDocument } from "../database/models/roles.model";
 import { IReviewDocument } from "../database/models/review.model";
+import { IAccount } from "./account.interface";
 
 export interface IUser {
   username: string;
@@ -12,6 +13,8 @@ export interface IUser {
   last_name: string;
   role: IRolesDocument["_id"];
   review: IReviewDocument["_id"];
+  ARSAccount: IAccount;
+  USDAccount: IAccount;
 }
 
 export interface IUserDTO {

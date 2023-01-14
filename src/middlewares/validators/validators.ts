@@ -1,13 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import { check, validationResult } from "express-validator";
+import { newError } from "../errorHandler/errorMiddleware";
 
 const validateResult = (req: Request, res: Response, next: NextFunction) => {
   try {
     validationResult(req).throw();
     return next();
   } catch (err: any) {
-    res.status(403);
-    res.send({ errors: err.array() });
+    console.log(err);
+
+    next(newError(400, err.array()));
   }
 };
 
@@ -116,50 +118,50 @@ export const authUserValidator = [
 
 //Nursery register
 export const authNurseryValidator = [
-check("email")
-  .exists()
-  .withMessage("Email field is required")
-  .isLength({ min: 5 })
-  .withMessage("Email must have at least six (6) characters long")
-  .isLength({ max: 20 })
-  .withMessage("Email can't have more than twenty (20) characters")
-  .isEmail()
-  .withMessage("It should be an email"),
-check("password")
-  .exists()
-  .withMessage("Password field is required")
-  .isLength({ min: 6 })
-  .withMessage("Password must have at least six (6) characters long")
-  .isLength({ max: 20 })
-  .withMessage("Password can't have more than twenty (20) characters")
-  /*.isStrongPassword({
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
-    minSymbols: 1,
-  })
-  .withMessage(
-    "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and special characters"
-  )*/
-  .not()
-  .isEmpty()
-  .withMessage("Password cannot be empty"),
-check("first_name")
-  .exists()
-  .withMessage("First name field is required")
-  .isString()
-  .withMessage("First name must be a valid string")
-  .not()
-  .isEmpty()
-  .withMessage("First name cannot be empty"),
-check("last_name")
-  .exists()
-  .withMessage("Last name field is required")
-  .isString()
-  .withMessage("Last name must be a valid string")
-  .not()
-  .isEmpty()
-  .withMessage("Last name cannot be empty"),
+  check("email")
+    .exists()
+    .withMessage("Email field is required")
+    .isLength({ min: 5 })
+    .withMessage("Email must have at least six (6) characters long")
+    .isLength({ max: 20 })
+    .withMessage("Email can't have more than twenty (20) characters")
+    .isEmail()
+    .withMessage("It should be an email"),
+  check("password")
+    .exists()
+    .withMessage("Password field is required")
+    .isLength({ min: 6 })
+    .withMessage("Password must have at least six (6) characters long")
+    .isLength({ max: 20 })
+    .withMessage("Password can't have more than twenty (20) characters")
+    /*.isStrongPassword({
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    })
+    .withMessage(
+      "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and special characters"
+    )*/
+    .not()
+    .isEmpty()
+    .withMessage("Password cannot be empty"),
+  check("first_name")
+    .exists()
+    .withMessage("First name field is required")
+    .isString()
+    .withMessage("First name must be a valid string")
+    .not()
+    .isEmpty()
+    .withMessage("First name cannot be empty"),
+  check("last_name")
+    .exists()
+    .withMessage("Last name field is required")
+    .isString()
+    .withMessage("Last name must be a valid string")
+    .not()
+    .isEmpty()
+    .withMessage("Last name cannot be empty"),
   /*check("username")
     .exists()
     .withMessage("Username field is required")
